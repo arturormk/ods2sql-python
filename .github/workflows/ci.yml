@@ -30,3 +30,6 @@ jobs:
 
       - name: Run tests
         run: pytest -q
+
+      - name: Lint ADRs
+        run: python3 scripts/lint_adrs.py
