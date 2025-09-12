@@ -177,6 +177,7 @@ Suggested Hooks:
 - Raw `print(` blocker (allow explicit `file=` usage for intentional streams)
 - Fast test subset (pre-push): 1–3 sentinel tests covering critical paths
 - (Optional) Incident guard hooks (e.g., verify `pyproject.toml` static version matches module `__version__` if dynamic disabled)
+- Incident log linter (sequential IDs, required sections)
 
 Escalation: full suite always in CI.
 
@@ -294,6 +295,7 @@ preferred-citation:
 - Audit README for accuracy vs features.
 - Verify `pyproject.toml` authors & metadata still correct.
 - Review Incident Log: close resolved ones, consolidate patterns, ensure added guardrails are still active.
+  - Run incident linter (automated in CI + pre-commit) to ensure structural integrity.
 
 ## 23. Human Curator Quick Reference
 | Task | Command Examples |

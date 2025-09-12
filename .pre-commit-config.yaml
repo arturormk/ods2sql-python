@@ -25,6 +25,12 @@ repos:
         language: system
         pass_filenames: false
         stages: [pre-commit]
+      - id: incidents-lint
+        name: Incident log lint
+        entry: python scripts/lint_incidents.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
       - id: no-debug-prints
         name: Disallow raw print without file= in src
         entry: bash scripts/check_prints.sh

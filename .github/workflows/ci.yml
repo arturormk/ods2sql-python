@@ -43,3 +43,6 @@ jobs:
 
       - name: Lint ADRs
         run: python3 scripts/lint_adrs.py
+
+      - name: Lint Incidents
+        run: python3 scripts/lint_incidents.py
