@@ -102,3 +102,31 @@ ruff check .
 mypy --strict src tests scripts
 pytest -q
 ```
+
+### Pre-commit hooks
+
+This repo ships a `.pre-commit-config.yaml` to enforce fast hygiene and curation policy checks locally:
+
+Hooks on commit:
+- Trailing whitespace / EOF fixers
+- Ruff lint + format (`--fix`)
+- Import smoke (`import ods2sql`) guard
+- ADR index sync check (fails if a new ADR file isn’t indexed)
+- Debug `print(` blocker for `src/ods2sql.py`
+
+Hook on push:
+- Fast sanity tests subset (`scripts/fast_tests.sh`)
+
+Enable:
+
+```bash
+pip install -r requirements-dev.txt
+pre-commit install
+pre-commit install --hook-type pre-push
+```
+
+Run all hooks manually:
+
+```bash
+pre-commit run --all-files
+```
