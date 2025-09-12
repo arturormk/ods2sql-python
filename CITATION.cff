@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: ods2sql-python
+message: >-
+  If you use ods2sql-python in academic work, please cite it using the metadata below.
+type: software
+authors:
+  - given-names: Arturo
+    family-names: Montesinos
+repository-code: https://github.com/your-org/ods2sql-python
+license: MIT
+version: 0.1.0
+date-released: 2024-01-01
+abstract: >-
+  Pure standard-library Python CLI that converts instrumented LibreOffice Calc .ods files into
+  SQL for SQLite, PostgreSQL, and MySQL, featuring automatic per-column indexing, optional
+  composite indexes, primary key handling, and dialect-aware quoting.
+keywords:
+  - ods
+  - libreoffice
+  - sql
+  - etl
+  - sqlite
+  - postgres
+  - mysql

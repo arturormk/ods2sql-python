@@ -23,7 +23,7 @@ classifiers = [
   "Topic :: Database",
   "Topic :: Utilities",
 ]
-dynamic = ["version"]
+version = "0.1.0"
 
 [project.scripts]
 ods2sql = "ods2sql:main"
@@ -31,9 +31,6 @@ ods2sql = "ods2sql:main"
 [tool.setuptools]
 py-modules = ["ods2sql"]
 package-dir = {"" = "src"}
-
-[tool.setuptools.dynamic]
-version = { attr = "ods2sql:__version__" }
 
 [tool.ruff]
 line-length = 100
