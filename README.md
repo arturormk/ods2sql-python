@@ -17,6 +17,14 @@ This dependency-free CLI reads native LibreOffice Calc .ods files (via `zipfile`
 
 DuckDB: The SQLite dialect output works well with DuckDB in practice.
 
+## Install
+
+You can run the script directly or install as a CLI.
+
+- Local script: clone and run `./src/ods2sql.py --help`
+- Package build: `python -m build` then `pip install dist/ods2sql_python-*.whl`
+- Editable dev install: `pip install -e .`
+
 ## Instrumentation (per sheet/tab)
 
 Column A is reserved for control keywords; data starts at column B. The sheet must begin with:
@@ -43,6 +51,8 @@ Multiple tables per sheet are supported; each new 'sqltable' row starts a new bl
 ./ods2sql.py data.ods --dialect postgres --batch 1000 > load.sql
 ```
 
+When installed as a package, use the `ods2sql` command.
+
 ## Indexing and keys
 
 By default, the tool creates a non-unique index for every column (handy for browsing/search in SQLite). You can customize:
@@ -67,8 +77,28 @@ By default, the tool creates a non-unique index for every column (handy for brow
 - The parser collapses repeated empty rows in ODS to avoid expanding millions of blank lines at the end of a sheet.
 - Identifiers are quoted and escaped per dialect; you can use schema-qualified names (e.g., `schema.table`).
 
+## Design decisions (ADRs)
+
+Architectural choices are captured in `docs/adr/`. See the index here:
+
+- docs/adr/README.md
+
 ## Portability notes
 
 - Identifier length limits: generated index names are truncated to fit common limits (Postgres 63, MySQL 64, SQLite treated as 64 for portability). A short hash suffix is added when truncation occurs.
 - MySQL index constraints: indexes on `TEXT`/`BLOB` columns require a prefix length in MySQL. This tool skips such indexes and prints a warning to stderr to avoid invalid SQL. Define composite indexes that avoid `TEXT`/`BLOB` columns, or add indexes manually with a prefix length if needed.
 - Empty strings: empty Python strings (`""`) are emitted as SQL `NULL` values unconditionally.
+
+## Attribution & Curation
+
+This project’s source code was generated with extensive AI assistance and then **human‑curated**. See ADR-0010 for the formal policy. All architectural intent, testing strategy, and release decisions are documented and reviewed by a human maintainer ("Software Curator"). AI output is treated as a draft; only curated, test‑verified changes are merged. Copyright and authorship remain with the human contributors.
+
+## Contributing
+
+See `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`. Run CI checks locally:
+
+```bash
+ruff check .
+mypy --strict src tests scripts
+pytest -q
+```

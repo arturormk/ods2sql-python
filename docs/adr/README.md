@@ -19,6 +19,7 @@ This folder documents the key architectural decisions for ods2sql-python. We fol
 - 0007 — [Transactions and batching performance](./0007-transactions-and-batching-performance.md)
 - 0008 — [Duplicate column names fail fast](./0008-duplicate-column-names-fail-fast.md)
 - 0009 — [Output contract (stdout vs stderr) and versioning](./0009-output-contract-stdout-vs-stderr-and-versioning.md)
+- 0010 — [AI assistance and curation policy](./0010-ai-assistance-and-curation-policy.md)
 
 > **Workflow**
 >
