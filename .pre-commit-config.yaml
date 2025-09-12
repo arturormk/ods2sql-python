@@ -1,0 +1,39 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: import-smoke
+        name: Import smoke (ods2sql)
+        entry: python -c "import ods2sql; print('import ok')"
+        language: system
+        pass_filenames: false
+        stages: [commit]
+      - id: adr-index-sync
+        name: ADR index includes newest ADR file
+        entry: python scripts/check_adr_index.py
+        language: system
+        pass_filenames: false
+        stages: [commit]
+      - id: no-debug-prints
+        name: Disallow debug print in src
+        entry: bash -c "! grep -R 'print(' src/ods2sql.py || (echo 'Remove debug print statements before committing.' >&2; exit 1)"
+        language: system
+        pass_filenames: false
+        stages: [commit]
+      - id: run-selected-tests
+        name: Fast sanity tests
+        entry: bash scripts/fast_tests.sh
+        language: system
+        pass_filenames: false
+        stages: [push]
