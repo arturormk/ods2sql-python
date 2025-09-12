@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ods2sql-python"
+description = "Pure-stdlib CLI to convert instrumented LibreOffice .ods into SQL (SQLite/Postgres/MySQL)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Arturo R Montesinos" }]
+keywords = ["ods", "libreoffice", "sqlite", "postgres", "mysql", "sql", "etl", "spreadsheet"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Database",
+  "Topic :: Utilities",
+]
+dynamic = ["version"]
+
+[project.scripts]
+ods2sql = "ods2sql:main"
+
+[tool.setuptools]
+py-modules = ["ods2sql"]
+package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+version = { attr = "ods2sql:__version__" }
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
