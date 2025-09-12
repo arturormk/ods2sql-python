@@ -43,6 +43,7 @@ This file defines: objectives, required artifacts, process constraints, quality 
 | 4 | `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `AUTHORS` | Community + attribution |
 | 4 | AI curation ADR + README attribution section | Provenance and policy |
 | 5 | Optional: `CITATION.cff` | Scholarly citation & DOIs |
+| 5 | `docs/incidents/` (Incident Log) | Curatorial knowledge base of reusable failure lessons |
 
 ## 5. ADR System
 - Directory: `docs/adr/`
@@ -114,7 +115,7 @@ project/
 - Use `pyproject.toml` with:
   - `[build-system]` setuptools backend (or uv/poetry if justified by ADR)
   - `[project]` PEP 621 metadata
-  - Dynamic version via module attribute or static version field
+  - Dynamic version via module attribute or static version field (NOTE: for a single-module `py-modules` layout, prefer a static `version` field to avoid brittle dynamic resolution—see Incident Log if one exists)
   - Console script via `[project.scripts] toolname = "package_or_module:main"`
 - Keep runtime deps minimal; dev-only items in `requirements-dev.txt`.
 
@@ -143,7 +144,7 @@ py-modules = ["your_module"]
 # or: packages = ["your_pkg"]
 
 [tool.setuptools.dynamic]
-version = { attr = "your_module:__version__" }
+version = { attr = "your_module:__version__" }  # Use only when package import path is stable; otherwise keep static.
 ```
 
 ## 9. Testing Strategy
@@ -175,6 +176,7 @@ Suggested Hooks:
 - ADR index checker (ensures new ADR added to index)
 - Raw `print(` blocker (allow explicit `file=` usage for intentional streams)
 - Fast test subset (pre-push): 1–3 sentinel tests covering critical paths
+- (Optional) Incident guard hooks (e.g., verify `pyproject.toml` static version matches module `__version__` if dynamic disabled)
 
 Escalation: full suite always in CI.
 
@@ -216,7 +218,7 @@ preferred-citation:
 
 ## 15. Versioning & Releases
 - Semantic versioning (MAJOR.MINOR.PATCH).
-- `__version__` constant single-sourced (or use dynamic version automation tool if introduced by ADR).
+- `__version__` constant single-sourced. Prefer static `version` in `pyproject.toml` for single-file modules; only enable dynamic attribute resolution once migrated to a package dir and guarded by an import verification step.
 - Release checklist:
   1. Update CHANGELOG (optional) or summarize in GitHub Release notes.
   2. Ensure CI green.
@@ -239,6 +241,7 @@ preferred-citation:
 | Provenance | Attribution maintained (no removal of curation policy) |
 | Packaging | Build step succeeds (wheel/sdist) |
 | ADR Integrity | Index updated, required sections present |
+| Incidents (if applicable) | New reusable failure documented in `docs/incidents/` with guardrail noted |
 
 ## 18. Threats / Anti-Patterns to Avoid
 - Silent behavior changes without tests/ADRs.
@@ -246,6 +249,7 @@ preferred-citation:
 - Skipping human review under time pressure.
 - Overloading pre-commit with long-running tasks (causes bypassing).
 - Copy/pasting external code without license vetting.
+- Allowing the same class of failure to recur without capturing a distilled lesson (missing incident log entry & guardrail).
 
 ## 19. AI Assistant Operating Procedure (Hand This to the AI)
 1. Read repository tree (list + targeted reads) before acting.
@@ -280,7 +284,8 @@ preferred-citation:
 7. Add pre-commit minimal hooks; install locally.
 8. Add attribution & AI curation ADR.
 9. Harden tests (edge cases) & indexing of ADR references.
-10. Tag `v0.1.0` once stable.
+10. Introduce `docs/incidents/` scaffold (README + TEMPLATE) early or upon first qualifying incident.
+11. Tag `v0.1.0` once stable.
 
 ## 22. Maintenance Cycle (Per Sprint / Iteration)
 - Review open ADR proposals; accept or supersede.
@@ -288,6 +293,7 @@ preferred-citation:
 - Run `pre-commit run --all-files` to flush drift.
 - Audit README for accuracy vs features.
 - Verify `pyproject.toml` authors & metadata still correct.
+- Review Incident Log: close resolved ones, consolidate patterns, ensure added guardrails are still active.
 
 ## 23. Human Curator Quick Reference
 | Task | Command Examples |
@@ -309,6 +315,29 @@ preferred-citation:
 - Add badges: coverage, PyPI version, license.
 - Provide Docker dev container or devcontainer.json (ADR documenting rationale).
 - Add `Makefile` or task runner (only if it reduces friction; otherwise keep docs simple).
+- Automated incident linter (sequential IDs, required sections) in CI.
+
+## 26. Curatorial Incident Log
+Purpose: capture non-trivial events (CI/build failures, packaging pitfalls, subtle contract risks) that generate reusable prevention value.
+
+Location: `docs/incidents/`
+
+Include (TEMPLATE fields): ID (`INC-XXXX`), Date, Status, Context/Trigger, Symptom, Root Cause, Resolution, Prevention/Guardrail, References (commit, ADR, CI log), Tags.
+
+Inclusion Criteria:
+- Failure class could plausibly recur or teach a general safeguard.
+- Led to a policy, hook, test, or documentation change.
+
+Exclusions:
+- Trivial typos, purely cosmetic formatting, obvious one-off mistakes.
+
+Process:
+1. Upon resolving qualifying incident, create file `INC-XXXX-<kebab>.md`.
+2. Link relevant ADR(s); if a decision changes materially, update ADR and reference the incident.
+3. Add/verify guardrail (test, hook, CI step) before closing incident.
+4. Periodic consolidation: extract recurring patterns into higher-level guidance; prune obsolete entries.
+
+Goal: strengthen institutional memory for AI-assisted curation while keeping user-facing docs (README/CHANGELOG) succinct.
 
 ---
 ## Final Notes
