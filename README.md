@@ -88,6 +88,7 @@ Architectural choices are captured in `docs/adr/`. See the index here:
 - Identifier length limits: generated index names are truncated to fit common limits (Postgres 63, MySQL 64, SQLite treated as 64 for portability). A short hash suffix is added when truncation occurs.
 - MySQL index constraints: indexes on `TEXT`/`BLOB` columns require a prefix length in MySQL. This tool skips such indexes and prints a warning to stderr to avoid invalid SQL. Define composite indexes that avoid `TEXT`/`BLOB` columns, or add indexes manually with a prefix length if needed.
 - Empty strings: empty Python strings (`""`) are emitted as SQL `NULL` values unconditionally.
+- TEXT formatting: when a column is declared `TEXT`, the tool prefers the cell's formatted display over the raw typed value when sensible. For example, a percentage cell with value `0.12` is emitted as `'12%'` instead of `'0.12'`.
 
 ## Attribution & Curation
 
@@ -102,6 +103,19 @@ ruff check .
 mypy --strict src tests scripts
 pytest -q
 ```
+
+### Development setup (venv + dev deps)
+
+To work on this repo locally (humans and AI agents alike), please create and activate a Python virtual environment and install development dependencies from `requirements-dev.txt`:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements-dev.txt
+```
+
+Once activated, you can run linters and tests as shown above. Remember to re-activate the environment in new shells: `source .venv/bin/activate`.
 
 ### Pre-commit hooks
 

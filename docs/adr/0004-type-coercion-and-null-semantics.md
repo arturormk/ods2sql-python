@@ -12,6 +12,7 @@ ODS stores values with `office:value-type` and helpers. We need predictable SQL 
 * Map: `string→str`, `float/currency/percentage→Decimal`, `boolean→bool`, `date/time→ISO strings`, covered/empty→`None`.
 * Emit: `None→NULL`; booleans as `1/0` (SQLite) or `TRUE/FALSE` (PG/MySQL); decimals as non-scientific; strings quoted with `''` escaping.
 * **Empty strings (`''`) are emitted as `NULL`.**
+* Formatting for TEXT columns: when a column's SQL type is `TEXT`, the emitted value prefers the cell's formatted display when available. As a pragmatic baseline without styles parsing, percentage cells are rendered as a percent string (e.g., `0.12` → `'12%'`).
 
 ### Consequences
 

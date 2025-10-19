@@ -1,19 +1,34 @@
 from zipfile import ZipFile
 from xml.etree.ElementTree import Element, SubElement, tostring
 from pathlib import Path
+from typing import Any, Dict, Optional, Sequence, TypedDict
 
-NS = {
+NS: Dict[str, str] = {
     'office': 'urn:oasis:names:tc:opendocument:xmlns:office:1.0',
     'table': 'urn:oasis:names:tc:opendocument:xmlns:table:1.0',
     'text': 'urn:oasis:names:tc:opendocument:xmlns:text:1.0',
 }
 
 
-def q(ns, tag):
+def q(ns: str, tag: str) -> str:
     return f'{{{NS[ns]}}}{tag}'
 
 
-def make_cell(parent, value=None, *, vtype=None, cols_repeat=1, covered=False):
+class CellSpec(TypedDict, total=False):
+    value: object
+    vtype: Optional[str]
+    cols_repeat: int
+    covered: bool
+
+
+def make_cell(
+    parent: Element,
+    value: Optional[object] = None,
+    *,
+    vtype: Optional[str] = None,
+    cols_repeat: int = 1,
+    covered: bool = False,
+) -> Element:
     tag = 'covered-table-cell' if covered else 'table-cell'
     cell = SubElement(parent, q('table', tag))
     if cols_repeat > 1:
@@ -34,25 +49,23 @@ def make_cell(parent, value=None, *, vtype=None, cols_repeat=1, covered=False):
     return cell
 
 
-def make_row(table_el, values, *, rows_repeat=1):
+def make_row(table_el: Element, values: Sequence[Any], *, rows_repeat: int = 1) -> Element:
     row = SubElement(table_el, q('table', 'table-row'))
     if rows_repeat > 1:
         row.set(q('table', 'number-rows-repeated'), str(rows_repeat))
     for v in values:  # v can be plain or dict with {value, vtype, cols_repeat, covered}
         if isinstance(v, dict):
-            make_cell(
-                row,
-                v.get('value'),
-                vtype=v.get('vtype'),
-                cols_repeat=v.get('cols_repeat', 1),
-                covered=v.get('covered', False),
-            )
+            cv = v.get('value')
+            vt = v.get('vtype') if 'vtype' in v else None
+            cr = int(v.get('cols_repeat', 1) or 1)
+            cov = bool(v.get('covered', False))
+            make_cell(row, cv, vtype=vt, cols_repeat=cr, covered=cov)
         else:
             make_cell(row, v, vtype='string')
     return row
 
 
-def write_ods(path: Path, sheet_name: str, rows):
+def write_ods(path: Path, sheet_name: str, rows: Sequence[Any]) -> Path:
     doc = Element(q('office', 'document-content'), {f'xmlns:{k}': v for k, v in NS.items()})
     body = SubElement(doc, q('office', 'body'))
     sheet = SubElement(

@@ -8,7 +8,7 @@ from .helpers import write_ods
 SCRIPT = Path(__file__).resolve().parents[1] / 'src' / 'ods2sql.py'
 
 
-def run_cli(args):
+def run_cli(args: list[str]) -> tuple[int, str, str]:
     p = subprocess.run([sys.executable, str(SCRIPT), *args], capture_output=True, text=True)
     return p.returncode, p.stdout, p.stderr
 

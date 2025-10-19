@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format loosely follows Keep a Changelog and uses semantic-ish versioning (major.minor.patch).
 
-## [0.1.0] - 2024-01-01
+## [0.1.1] - 2025-10-19
+Enhancements:
+- TEXT columns now prefer the document’s own display text, preserving locale formatting (e.g., commas and non‑breaking space before %).
+- Percentage fallback for TEXT cells (when no display text is present) reads decimal places from content.xml styles; otherwise rounds sensibly and trims trailing zeros. Locale decimal separator is respected where applicable.
+
+Developer experience:
+- Added Development setup instructions (venv + requirements-dev.txt).
+- mypy --strict clean: added annotations across test helpers and scripts.
+
+Docs:
+- Updated ADR-0004 and README to mention TEXT formatted display semantics.
+
+## [0.1.0] - 2025-11-09
 Initial curated release.
 
 Highlights:

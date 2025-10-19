@@ -22,6 +22,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from typing import NoReturn
 
 RE_FILE = re.compile(r'^INC-(\d{4})-[a-z0-9-]+\.md$')
 RE_COMMIT = re.compile(r'\b[0-9a-f]{7,40}\b')
@@ -38,7 +39,7 @@ RE_STATUS = re.compile(r'^\*\*Status:\*\*\s*(.+)$', re.IGNORECASE)
 RE_TAGS = re.compile(r'^\*\*Tags:\*\*\s*(.+)$', re.IGNORECASE)
 
 
-def fail(msg: str):
+def fail(msg: str) -> NoReturn:
     print(f'[INC-LINT] FAIL: {msg}', file=sys.stderr)
     raise SystemExit(1)
 
@@ -54,12 +55,13 @@ def main() -> int:
         print('[INC-LINT] No incident files.')
         return 0
     files.sort()
-    ids = []
+    ids: list[int] = []
     for p in files:
         m = RE_FILE.match(p.name)
         if not m:
             fail(f'Bad filename: {p.name} (expected INC-XXXX-kebab.md)')
-        ids.append(int(m.group(1)))
+        g = m.group(1)
+        ids.append(int(g))
     # Check sequential
     for previous, current in zip(ids, ids[1:]):
         if current != previous + 1:

@@ -23,7 +23,7 @@ classifiers = [
   "Topic :: Database",
   "Topic :: Utilities",
 ]
-version = "0.1.0"
+version = "0.1.1"
 
 [project.scripts]
 ods2sql = "ods2sql:main"
