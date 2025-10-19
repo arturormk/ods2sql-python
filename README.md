@@ -5,6 +5,17 @@ One-file, pure-stdlib Python tool that converts instrumented LibreOffice .ods sh
 
 This dependency-free CLI reads native LibreOffice Calc .ods files (via `zipfile` + `xml.etree`) and emits SQL you can pipe straight into your database. Instrument your sheet with a tiny first-column markup and get reproducible `CREATE TABLE`, `INSERT`, and index statements—perfect for quick ETL, data audits, and sharing spreadsheet data as a real database.
 
+## TL;DR
+
+- What: One-file, pure-stdlib CLI that turns instrumented LibreOffice `.ods` spreadsheets into SQL (SQLite/Postgres/MySQL). Emits SQL on stdout; diagnostics on stderr.
+- How: Clone this repo and run it directly, or just copy the single file `src/ods2sql.py` into your project and execute it with Python.
+- Example:
+
+```bash
+# If you copied the script next to your data
+./ods2sql.py document.ods | sqlite3 document.sqlite
+```
+
 ## Highlights
 
 - Pure standard library (no external deps)
